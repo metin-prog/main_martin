@@ -5,8 +5,7 @@
     }
 
     var doc = app.activeDocument;
-
-    // Ask user to choose the new folder for links
+    
     var newFolder = Folder.selectDialog("Select the folder containing the new PNGs");
 
     if (!newFolder) {
@@ -16,7 +15,7 @@
 
     var links = doc.links;
     var relinkCount = 0;
-    var missingCount = 0;
+    var missingFiles = [];
 
     for (var i = 0; i < links.length; i++) {
         var link = links[i];
@@ -34,11 +33,16 @@
                     $.writeln("Error relinking " + fileName + ": " + e);
                 }
             } else {
-                missingCount++;
-                $.writeln("File not found in folder: " + fileName);
+                missingFiles.push(fileName);
             }
         }
     }
 
-    alert("Relinking complete!\n\nRelinked: " + relinkCount + "\nMissing: " + missingCount);
+    var message = "Relinking complete!\n\nRelinked: " + relinkCount;
+
+    if (missingFiles.length > 0) {
+        message += "\n\nMissing files (" + missingFiles.length + "):\n- " + missingFiles.join("\n- ");
+    }
+
+    alert(message);
 })();
